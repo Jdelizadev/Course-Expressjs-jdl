@@ -5,6 +5,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+const fs = require('fs');
+const path = require('path');
+
+const users = path.join(__dirname, 'users.json')
+
 const PORT = process.env.PORT || 3000;
 console.log(PORT)
 
@@ -55,6 +60,16 @@ app.post('/api/data', (req,res) => {
     res.status(201).json({
         message: 'Datos JSON recibidos',
         data
+    })
+})
+
+app.get('/users', (req,res) => {
+    fs.readFile(users, 'utf-8', (err, data) => {
+        if (err) {
+            return res.status(500).json({error: 'Error en la conexion con la data'})
+        }
+        const users = JSON.parse(data)
+        res.json(users)
     })
 })
 
